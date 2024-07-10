@@ -44,28 +44,21 @@ To use the Scalar package as a provider in your Go project for creating API refe
 package main
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"go-fiber-swagger/src/middlewares"
+	"log"
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 func main() {
-	router := chi.NewRouter()
-
-	router.Use(middleware.RequestID)
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
-
-	router.Get("/", create)
-
-	router.Get("/reference", func(w http.ResponseWriter, r *http.Request) {
+	app := fiber.New()
+	middlewares.Logger(app)
+	app.Use("/api/docs", func(c *fiber.Ctx) error {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
-			// SpecURL: "https://generator3.swagger.io/openapi.json",// allow external URL or local path file
-			SpecURL: "./docs/swagger.json", 
+			SpecURL: "./docs/swagger.yaml",
 			CustomOptions: scalar.CustomOptions{
 				PageTitle: "Simple API",
 			},
@@ -73,14 +66,16 @@ func main() {
 		})
 
 		if err != nil {
-			fmt.Printf("%v", err)
+			return err
 		}
-
-		fmt.Fprintln(w, htmlContent)
+		c.Type("html")
+		return c.SendString(htmlContent)
 	})
-
-	fmt.Printf("Starting web server on port :8000")
-	http.ListenAndServe(":8000", router)
+	app.Use(recover.New())
+	app.Use(cors.New())
+	log.Fatal(app.Listen(":3000"))
 }
-
 ```
+## License
+
+This project is forked from [MarceloPetrucio/go-scalar-api-reference](https://github.com/MarceloPetrucio/go-scalar-api-reference) and is licensed under the MIT License.

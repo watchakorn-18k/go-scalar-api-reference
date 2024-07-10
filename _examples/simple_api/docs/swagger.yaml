@@ -1,23 +1,26 @@
-definitions:
-  main.ResponseSuccess:
-    properties:
-      message:
-        type: string
-    type: object
+openapi: 3.1.0
 info:
-  contact: {}
+  title: API backend service
+  version: "1.0"
+servers:
+  - url: /
 paths:
-  /:
+  /get_user_role:
     get:
-      description: Simple get hello word
+      tags:
+        - hello
+      description: Hello
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
       produces:
-      - application/json
+        - application/json
+      summary: Hello
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/main.ResponseSuccess'
-      summary: Get Hello
-      tags:
-      - Hello
-swagger: "2.0"
+          content:
+            application/json:
+              example:
+                message: "Hello, World!"

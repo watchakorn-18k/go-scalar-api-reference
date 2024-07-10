@@ -1,37 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"log"
+	"simple_api/middlewares"
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-// @title           Simple API
-// @version         1.0
-// @description     Exemple use of scalar beautfull api
-// @termsOfService  http://swagger.io/terms/
-
-// @contact.name   Marcelo Petrucio
-// contact.url    https://marcelopetrucio.dev
-// @contact.email  marcelo.petrucio43@gmail.com
-
-// @BasePath  /
 func main() {
-	router := chi.NewRouter()
-
-	router.Use(middleware.RequestID)
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
-
-	router.Get("/", create)
-
-	router.Get("/reference", func(w http.ResponseWriter, r *http.Request) {
+	app := fiber.New()
+	middlewares.Logger(app)
+	app.Use("/api/docs", func(c *fiber.Ctx) error {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
-			SpecURL: "./docs/swagger.json",
+			SpecURL: "./docs/swagger.yaml",
 			CustomOptions: scalar.CustomOptions{
 				PageTitle: "Simple API",
 			},
@@ -39,12 +23,18 @@ func main() {
 		})
 
 		if err != nil {
-			fmt.Printf("%v", err)
+			return err
 		}
-
-		fmt.Fprintln(w, htmlContent)
+		c.Type("html")
+		return c.SendString(htmlContent)
 	})
+	app.Use(recover.New())
+	app.Use(cors.New())
 
-	fmt.Printf("Starting web server on port :8000")
-	http.ListenAndServe(":8000", router)
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+			"message": "Hello World",
+		})
+	})
+	log.Fatal(app.Listen(":3000"))
 }

@@ -3,6 +3,7 @@ package scalar
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 )
 
@@ -50,7 +51,15 @@ func ApiReferenceHTML(optionsInput *Options) (string, error) {
 			}
 			options.SpecContent = content
 		} else {
-			urlPath, err := ensureFileURL(options.SpecURL)
+			cleanPath := filepath.Clean(optionsInput.SpecURL)
+			parts := strings.Split(cleanPath, string(filepath.Separator))
+
+			specPath := filepath.Join(parts...)
+			absPath, err := filepath.Abs(specPath)
+			if err != nil {
+				return "", err
+			}
+			urlPath, err := ensureFileURL(filepath.ToSlash(absPath))
 			if err != nil {
 				return "", err
 			}
