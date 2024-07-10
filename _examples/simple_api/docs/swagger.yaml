@@ -3,12 +3,13 @@ info:
   title: API backend service
   version: "1.0"
 servers:
-  - url: /
+  - url: /api
+
 paths:
-  /get_user_role:
+  /hello:
     get:
       tags:
-        - hello
+        - api
       description: Hello
       security:
         - bearerAuth: []

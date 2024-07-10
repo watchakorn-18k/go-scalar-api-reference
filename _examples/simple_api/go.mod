@@ -3,7 +3,7 @@ module simple_api
 go 1.22.0
 
 require (
-	github.com/MarceloPetrucio/go-scalar-api-reference v0.0.0-20240507030316-afe48eb08f0e
+	github.com/watchakorn-18k/scalar-go v0.0.1
 	github.com/gofiber/fiber/v2 v2.52.5
 )
 

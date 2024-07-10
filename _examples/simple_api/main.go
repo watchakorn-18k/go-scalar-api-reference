@@ -4,10 +4,10 @@ import (
 	"log"
 	"simple_api/middlewares"
 
-	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/watchakorn-18k/scalar-go"
 )
 
 func main() {
@@ -30,8 +30,8 @@ func main() {
 	})
 	app.Use(recover.New())
 	app.Use(cors.New())
-
-	app.Get("/", func(c *fiber.Ctx) error {
+	api := app.Group("/api/")
+	api.Get("/hello", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(&fiber.Map{
 			"message": "Hello World",
 		})

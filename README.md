@@ -2,6 +2,12 @@
 
 The Scalar package serves as a provider for the [Scalar](https://github.com/scalar/scalar) project. It offers a comprehensive suite of functions designed for generating API references in HTML format, specializing in JSON data handling and web presentation customization. This includes functions to serialize options into JSON, manage HTML escaping, and dynamically handle different types of specification content.
 
+## Installation 📦
+
+```bash
+go get -u github.com/watchakorn-18k/scalar-go@latest
+```
+
 ## Features 🚀
 
 ### JSON Serialization and HTML Escaping
