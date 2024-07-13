@@ -1,3 +1,8 @@
+## Scalar Go
+
+<img src="_examples/image.png" align="center">
+
+
 ## Overview 🌐
 
 The Scalar package serves as a provider for the [Scalar](https://github.com/scalar/scalar) project. It offers a comprehensive suite of functions designed for generating API references in HTML format, specializing in JSON data handling and web presentation customization. This includes functions to serialize options into JSON, manage HTML escaping, and dynamically handle different types of specification content.
@@ -50,13 +55,13 @@ To use the Scalar package as a provider in your Go project for creating API refe
 package main
 
 import (
-	"go-fiber-swagger/src/middlewares"
 	"log"
+	"simple_api/middlewares"
 
-	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/watchakorn-18k/scalar-go"
 )
 
 func main() {
@@ -79,8 +84,15 @@ func main() {
 	})
 	app.Use(recover.New())
 	app.Use(cors.New())
+	api := app.Group("/api/")
+	api.Get("/hello", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+			"message": "Hello World",
+		})
+	})
 	log.Fatal(app.Listen(":3000"))
 }
+
 ```
 ## License
 
